@@ -9433,9 +9433,19 @@ function AskAnswer({ answer, loading }) {
       ) : (
         <>
           <div className="ask-answer-body">
-            {answer.answer.split(/\n\n+/).map((para, i) => (
-              <p key={i}>{renderInlineMarkdown(para)}</p>
-            ))}
+            {answer.answer.split(/\n\n+/).map((para, i) => {
+              const trimmed = para.trim();
+              // Block-level heading detection: #, ##, ###
+              const headingMatch = /^(#{1,3})\s+(.+)$/.exec(trimmed);
+              if (headingMatch) {
+                const level = headingMatch[1].length;
+                const content = headingMatch[2];
+                if (level === 1) return <h2 key={i} className="ask-h1">{renderInlineMarkdown(content)}</h2>;
+                if (level === 2) return <h3 key={i} className="ask-h2">{renderInlineMarkdown(content)}</h3>;
+                return <h4 key={i} className="ask-h3">{renderInlineMarkdown(content)}</h4>;
+              }
+              return <p key={i}>{renderInlineMarkdown(para)}</p>;
+            })}
           </div>
           {answer.related && answer.related.length > 0 && (
             <div className="ask-related">
@@ -13814,6 +13824,38 @@ html, body, #root {
 .ask-answer-body p:last-child { margin-bottom: 0; }
 .ask-answer-body strong { font-weight: 600; color: var(--ink); }
 .ask-answer-body em { font-style: italic; }
+
+/* Headings inside AI answers — match codex typography */
+.ask-h1 {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 24px 0 14px;
+  line-height: 1.3;
+}
+.ask-h1:first-child { margin-top: 0; }
+.ask-h2 {
+  font-family: var(--display);
+  font-size: 19px;
+  letter-spacing: 0.005em;
+  font-weight: 400;
+  color: var(--ink);
+  margin: 22px 0 12px;
+  line-height: 1.3;
+}
+.ask-h2:first-child { margin-top: 0; }
+.ask-h3 {
+  font-family: 'Cormorant SC', serif;
+  font-size: 11px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--red);
+  margin: 20px 0 10px;
+}
+.ask-h3:first-child { margin-top: 0; }
 .ask-inline-code {
   font-family: 'SF Mono', Menlo, Monaco, monospace;
   font-size: 14px;
