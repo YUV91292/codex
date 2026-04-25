@@ -9347,6 +9347,27 @@ function AskPage() {
   );
 }
 
+// Lightweight inline markdown renderer for AI answers.
+// Handles **bold**, *italic*, and `code`. Returns an array of React elements.
+function renderInlineMarkdown(text) {
+  if (!text) return text;
+  // Token pattern: matches **bold**, *italic*, or `code` — non-greedy
+  const tokenRegex = /(\*\*[^*\n]+?\*\*|(?<!\*)\*[^*\n]+?\*(?!\*)|`[^`\n]+?`)/g;
+  const parts = text.split(tokenRegex).filter(p => p !== undefined && p !== '');
+  return parts.map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i}>{part.slice(2, -2)}</strong>;
+    }
+    if (part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) {
+      return <em key={i}>{part.slice(1, -1)}</em>;
+    }
+    if (part.startsWith('`') && part.endsWith('`')) {
+      return <code key={i} className="ask-inline-code">{part.slice(1, -1)}</code>;
+    }
+    return part;
+  });
+}
+
 function AskAnswer({ answer, loading }) {
   if (!answer) return null;
   if (loading) {
@@ -9413,7 +9434,7 @@ function AskAnswer({ answer, loading }) {
         <>
           <div className="ask-answer-body">
             {answer.answer.split(/\n\n+/).map((para, i) => (
-              <p key={i}>{para}</p>
+              <p key={i}>{renderInlineMarkdown(para)}</p>
             ))}
           </div>
           {answer.related && answer.related.length > 0 && (
@@ -13791,6 +13812,15 @@ html, body, #root {
 }
 .ask-answer-body p { margin: 0 0 16px; }
 .ask-answer-body p:last-child { margin-bottom: 0; }
+.ask-answer-body strong { font-weight: 600; color: var(--ink); }
+.ask-answer-body em { font-style: italic; }
+.ask-inline-code {
+  font-family: 'SF Mono', Menlo, Monaco, monospace;
+  font-size: 14px;
+  background: var(--paper-warm);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
 
 .ask-related {
   margin-top: 32px;
