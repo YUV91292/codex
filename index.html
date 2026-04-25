@@ -8977,9 +8977,16 @@ function autoDetectMode(question) {
 }
 
 // Pick the top-relevant codex pages for a question.
-function relevantCodexPages(question, limit = 3) {
+function relevantCodexPages(question, limit = 6) {
   if (!question) return [];
   const q = question.toLowerCase();
+
+  // Detect whether the question is specifically about Urvil, Veronika, or "us"
+  // and weight pages from that person's codex much higher.
+  const mentionsVeronika = /\b(veronika|she|her|hers|herself)\b/.test(q);
+  const mentionsUrvil = /\b(urvil)\b/.test(q) || (/\b(i|me|my|myself|mine)\b/.test(q) && !mentionsVeronika);
+  const mentionsUs = /\b(we|us|our|ourselves|together|between us|between them|both of us|both of them|both)\b/.test(q);
+
   // Skip very common filler words so they don't generate spurious matches.
   const STOP_WORDS = new Set([
     'what', 'when', 'where', 'why', 'how', 'who', 'whose',
@@ -8993,9 +9000,11 @@ function relevantCodexPages(question, limit = 3) {
     'can', 'should', 'would', 'could', 'may', 'might', 'will',
     'have', 'has', 'had',
     'mean', 'means', 'meant',
+    'sometimes', 'always', 'never', 'often', 'much', 'very',
+    'really', 'just', 'get', 'gets', 'got', 'go', 'goes', 'going', 'went',
+    'feel', 'feels', 'felt', 'feeling',
   ]);
   const words = q.split(/\W+/).filter(w => w.length >= 3 && !STOP_WORDS.has(w));
-  if (words.length === 0) return [];
 
   const scored = SEARCH_INDEX.map(entry => {
     const label = (entry.label || '').toLowerCase();
@@ -9010,11 +9019,43 @@ function relevantCodexPages(question, limit = 3) {
       if (txt.includes(w))   { score += 1; matched = true; }
       if (matched) matchedWords++;
     });
-    return { entry, score, matchedWords };
-  }).filter(x => x.score >= 4 && x.matchedWords >= 1);
 
-  scored.sort((a, b) => b.score - a.score);
-  return scored.slice(0, limit).map(x => x.entry);
+    // Weight by named person — much more important than keyword scoring.
+    let personBoost = 1;
+    if (mentionsVeronika && entry.person === 'veronika') personBoost = 8;
+    else if (mentionsUrvil && entry.person === 'urvil') personBoost = 8;
+    else if (mentionsUs && entry.person === 'us') personBoost = 8;
+    // De-weight wrong-person pages when one person is clearly named.
+    else if (mentionsVeronika && entry.person === 'urvil') personBoost = 0.2;
+    else if (mentionsUrvil && entry.person === 'veronika') personBoost = 0.2;
+
+    score = score * personBoost;
+    return { entry, score, matchedWords };
+  });
+
+  // If a person is explicitly named, ensure we include some of their pages
+  // even if word-match is weak. The page-level overview is often the right
+  // first-pass answer.
+  let baselineThreshold = 4;
+  if (mentionsVeronika || mentionsUrvil || mentionsUs) baselineThreshold = 0.5;
+
+  const filtered = scored.filter(x => x.score >= baselineThreshold && (x.matchedWords >= 1 || x.score >= 3));
+  filtered.sort((a, b) => b.score - a.score);
+
+  // Ensure at least 3 results when a person is named, even if word-matching is sparse.
+  // We do this by including the named-person's overview/architecture pages as fallback.
+  let result = filtered.slice(0, limit).map(x => x.entry);
+  if (result.length < 3 && (mentionsVeronika || mentionsUrvil || mentionsUs)) {
+    const targetPerson = mentionsVeronika ? 'veronika' : mentionsUrvil ? 'urvil' : 'us';
+    const fallbacks = SEARCH_INDEX.filter(e =>
+      e.person === targetPerson &&
+      ['overview', 'architecture', 'channels', 'centres'].includes(e.section) &&
+      !result.some(r => r.path === e.path)
+    ).slice(0, 6 - result.length);
+    result = result.concat(fallbacks);
+  }
+
+  return result;
 }
 
 // Build context excerpts from a list of search-index entries by looking up
@@ -9047,10 +9088,19 @@ function buildContextFromEntries(entries) {
     if (pageContent.synthesis) block += `Synthesis: ${pageContent.synthesis}\n\n`;
     if (pageContent.essence) block += `Essence: ${pageContent.essence}\n\n`;
     if (pageContent.sections && pageContent.sections.length > 0) {
-      // Include first 2 chapters' bodies
-      pageContent.sections.slice(0, 2).forEach(s => {
+      // Include all chapters
+      pageContent.sections.forEach(s => {
         block += `${s.title}: ${s.body}\n\n`;
       });
+    }
+    // Include the daily-life scenario if present — often the most concrete answer
+    if (pageContent.scenario) {
+      block += `In daily life: ${pageContent.scenario.title || ''} — ${pageContent.scenario.body}\n`;
+      if (pageContent.scenario.takeaway) block += `Takeaway: ${pageContent.scenario.takeaway}\n\n`;
+    }
+    // Include "use this when" if present
+    if (pageContent.useThisWhen && pageContent.useThisWhen.length > 0) {
+      block += `Use this page when: ${pageContent.useThisWhen.join('; ')}\n\n`;
     }
     blocks.push(block);
   });
@@ -9136,7 +9186,7 @@ function AskPage() {
     let codexContext = '';
     let relatedEntries = [];
     if (detectedMode === 'codex') {
-      relatedEntries = relevantCodexPages(trimmed, 3);
+      relatedEntries = relevantCodexPages(trimmed, 6);
       codexContext = buildContextFromEntries(relatedEntries);
     }
 
