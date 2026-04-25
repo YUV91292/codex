@@ -8950,30 +8950,56 @@ function saveAskHistory(history) {
 
 // Detect whether a question is more about the personal codex or about general HD knowledge
 function autoDetectMode(question) {
-  const q = question.toLowerCase();
-  // Personal-codex signals
-  const personal = [
-    'i ', 'my ', 'me ', "i'm", "i've", "i'll",
-    'we ', 'us ', 'our ', "we're",
-    'urvil', 'veronika',
-    'she ', 'her ', 'his ', 'he ',
-    'between us', 'with her', 'with him',
-    'should i', 'should we', 'do i', 'does she',
+  const q = question.toLowerCase().trim();
+
+  // Personal-codex signals — clear references to "us", Veronika, or Urvil personally
+  const personalRegexes = [
+    /\b(i|me|my|mine|myself)\b/,
+    /\b(we|us|our|ours|ourselves)\b/,
+    /\b(urvil|veronika)\b/,
+    /\b(she|her|hers|herself)\b/,
+    /\b(he|him|his|himself)\b/,           // (when paired with the chart specifically)
+    /\bbetween (us|them|the two)\b/,
+    /\bshould (i|we)\b/,
+    /\bdoes (she|he)\b/,
+    /\bdo (i|we)\b/,
   ];
-  // General-knowledge signals
-  const general = [
-    'what is', 'what does', 'what are', 'how does',
-    'in human design', 'in gene keys', 'generally',
-    'what gate', 'what channel', 'what centre', 'what center',
-    'manifestor mean', 'generator mean', 'projector', 'reflector',
-    'profile mean', 'authority mean',
+
+  // General-knowledge signals — about HD/Gene Keys as a system, definitions,
+  // history, or third-party concepts
+  const generalRegexes = [
+    /^what (is|are|does|do)\b/,
+    /^how (do|does)\b.*\b(work|works|function)/,
+    /^who (is|was|started|founded|created|invented)/,
+    /^when (was|did|is)\b/,
+    /^where (is|did|does)\b/,
+    /^why (do|does|is|are)\b.*\b(people|generators|projectors|manifestors|reflectors|everyone)/,
+    /\b(in human design|in gene keys|in hd)\b/,
+    /\b(generally|in general|typically)\b/,
+    /\bwhat (gate|channel|centre|center|profile|authority|type) (is|does|are|means?)\b/,
+    /\b(manifestor|generator|projector|reflector|manifesting generator)\s+(mean|means|meaning|definition|type|aura)\b/,
+    /\b(siddhi|siddhis|shadow|gift|codon|programming partner|hexagram)\b/,
+    /\b(richard rudd|ra uru hu|jovian archive)\b/,
+    /\bdefin(e|ition|itions)\b/,
+    /\bmean(s|ing)?\b/,                  // "what does X mean"
   ];
-  let personalScore = 0, generalScore = 0;
-  personal.forEach(p => { if (q.includes(p)) personalScore++; });
-  general.forEach(g => { if (q.includes(g)) generalScore++; });
-  if (personalScore > generalScore) return 'codex';
-  if (generalScore > personalScore) return 'web';
-  return 'codex'; // default to codex when ambiguous
+
+  const personalHits = personalRegexes.filter(r => r.test(q)).length;
+  const generalHits = generalRegexes.filter(r => r.test(q)).length;
+
+  // Strong personal signal → codex
+  if (personalHits >= 1 && generalHits === 0) return 'codex';
+
+  // Strong general signal → web
+  if (generalHits >= 1 && personalHits === 0) return 'web';
+
+  // Both signals present → codex wins (it's about applying general knowledge to them)
+  if (personalHits >= 1 && generalHits >= 1) return 'codex';
+
+  // No signals at all → likely a factual/general question without personal framing
+  // (e.g., "who started gene keys?", "tell me about the spleen")
+  // Default to web in this case.
+  return 'web';
 }
 
 // Pick the top-relevant codex pages for a question.
