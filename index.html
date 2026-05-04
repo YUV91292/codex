@@ -8,7 +8,30 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Codex">
 <meta name="theme-color" content="#fafaf3">
-<style>html, body { margin: 0; padding: 0; background: #ffffff; } #root { min-height: 100vh; }</style>
+<style>html, body { margin: 0; padding: 0; background: #ffffff; } #root { min-height: 100vh; }
+/* === FAQ accordion (Quick reads) === */
+.ask-faq { max-width: 760px; margin: 0 auto; padding: 1.5rem 1rem 2rem; }
+.ask-faq-eyebrow { font-size: 0.7rem; letter-spacing: 0.18em; text-transform: uppercase; color: #c8102e; margin-bottom: 0.6rem; }
+.ask-faq-intro { font-size: 0.95rem; color: rgba(0,0,0,0.6); font-style: italic; margin-bottom: 2rem; line-height: 1.5; }
+.ask-faq-section { margin-bottom: 2rem; }
+.ask-faq-section-title { font-family: inherit; font-size: 1.05rem; font-weight: 500; letter-spacing: 0.02em; color: rgba(0,0,0,0.85); padding-bottom: 0.5rem; border-bottom: 1px solid rgba(0,0,0,0.08); margin-bottom: 0.4rem; }
+.ask-faq-item { border-bottom: 1px solid rgba(0,0,0,0.06); padding: 0.6rem 0; }
+.ask-faq-item[open] { padding-bottom: 1rem; }
+.ask-faq-q { cursor: pointer; padding: 0.6rem 0.2rem 0.6rem 1.2rem; font-size: 0.98rem; line-height: 1.4; color: rgba(0,0,0,0.85); list-style: none; position: relative; transition: color 0.15s ease; }
+.ask-faq-q::-webkit-details-marker { display: none; }
+.ask-faq-q::before { content: '+'; position: absolute; left: 0; top: 0.55rem; font-size: 1.1rem; color: #c8102e; transition: transform 0.2s ease; font-weight: 300; }
+.ask-faq-item[open] .ask-faq-q::before { content: '\2212'; }
+.ask-faq-q:hover { color: #c8102e; }
+.ask-faq-a { padding: 0.4rem 0.2rem 0.2rem 1.2rem; color: rgba(0,0,0,0.75); font-size: 0.94rem; line-height: 1.65; }
+.ask-faq-a p { margin: 0 0 0.9rem; }
+.ask-faq-a p:last-child { margin-bottom: 0; }
+@media (max-width: 600px) {
+  .ask-faq { padding: 1rem 0.5rem 1.5rem; }
+  .ask-faq-q { font-size: 0.95rem; padding-left: 1.4rem; }
+  .ask-faq-a { font-size: 0.92rem; padding-left: 1.4rem; }
+}
+
+</style>
 </head><body><div id="root"></div>
 <script>/**
  * @license React
@@ -8938,6 +8961,253 @@ const ASK_STARTER_QUESTIONS = [
   "What is Gate 47 in plain English?",
 ];
 
+// =========================================================================
+// FAQ_SECTIONS — 20 curated Q&As, three groups
+// =========================================================================
+
+const FAQ_SECTIONS = [
+  {
+    title: "Urvil's questions",
+    items: [
+      {
+        q: "What's my profile and what does it mean for how I learn?",
+        a: `You're a 1/3. The 1 means you're an investigator at the foundation level — you don't feel safe acting on something until you've learned it deeply, almost obsessively. The 3 means you learn through trial and error: you try things, watch them break or succeed, and the breaking is how you actually figure out what works. The two lines together are unusual because they pull in different directions. The 1 wants depth before action; the 3 wants experience before depth.
+
+Practically, this means you can't trust a teaching just because someone authoritative said it. You have to read about it, sit with it, and then test it in your own life — and the test itself often involves something failing. That isn't a flaw. The 3rd line is built for productive failure. A scenario you'll recognise: you read a book, get excited, try the thing it suggests, and within a few weeks something has gone sideways in a way the book didn't predict. Most people would say "the book was wrong." For you, that misfire is the actual lesson — the gap between the book and reality is where your understanding gets built.
+
+So the practical takeaway: when something doesn't work the first time, you haven't failed at it. You've started learning it.`
+      },
+      {
+        q: "What's my incarnation cross?",
+        a: `You're on the Right Angle Cross of Rulership (26/45 | 47/22). An incarnation cross is the four gates that form the structural axis of your life's purpose — your Personality Sun and Earth (the conscious arc) plus your Design Sun and Earth (the unconscious foundation). For you those are Gate 26 (Personality Sun, the "Egoist" gate, the salesperson, the one who knows how to communicate value), Gate 45 (Personality Earth, the "Gatherer," leadership of resources), Gate 47 (Design Sun, the "Realiser," the mind that makes sense of what doesn't yet make sense), and Gate 22 (Design Earth, the "Grace," social ease and emotional warmth as a grounding force).
+
+Rulership as a cross theme is about being a natural leader in the realm of resources, communication, and gathering people around something material or practical. Ra Uru Hu called the 26/45 axis "the money line" — not because it's about money specifically, but because it's about understanding value, distributing it, and rallying others. Combined with 47/22 underneath, you have the unconscious capacity to find clarity through stuck mental processes (47) anchored by social grace (22).
+
+So your life's structural pull is: lead through communication, gather through value, find clarity through what looks like confusion, ground it through warmth.`
+      },
+      {
+        q: "What's the difference between my Design Sun (47.3) and my Personality Sun (26.1)?",
+        a: `Two suns, two layers. Your Personality Sun is your conscious self — what you identify as "me," what you actively try to be, what you're aware of expressing. Your Design Sun is your unconscious wiring — what runs underneath, automatically, whether you notice it or not. About 70% of how you actually move through the world comes from the Design Sun, even though you experience yourself through the Personality Sun.
+
+Your Personality Sun is Gate 26.1 — the Egoist, the salesperson, the one who can compress a complex truth into a sentence that lands. Line 1 means there's an investigator quality to it: you don't just communicate, you communicate from a researched, foundational place. That's the conscious you, the one you can see in yourself.
+
+Your Design Sun is Gate 47.3 — Self-Oppression, the realiser. This is the unconscious mechanic where your mind sits with something stuck, confused, or oppressive, and at some point — not on a timeline you control — it suddenly makes sense. Line 3 means the resolution often comes through trial, error, and revision. People around you might notice you sitting with a problem longer than seems reasonable, then you suddenly arrive at clarity and articulate it (the 26 takes over) like you've known it all along.
+
+Practically: when you feel stuck mentally, that's your Design Sun working, not failing. Don't force the resolution. The 47 needs to cook.`
+      },
+      {
+        q: "What's my digestion type and what does it mean practically?",
+        a: `You're Daytime Eating, also called Direct Light. Your digestion works best when you eat in actual daylight — not artificial light, not at night, not in dim restaurants. Your body uses sunlight as a digestive cue, and when you eat outside that window, your system has to work harder to process what you've eaten.
+
+Practically, this means: lunch outside or near a window beats dinner indoors. Breakfast in real morning light is your strongest digestive moment of the day. Eating heavy meals after sunset — even if they're "healthy" foods — costs your body more than the same meal would cost it earlier. Over years, this compounds. Daytime Eating types who consistently eat their main meals after dark often report low energy, slow recovery, or weight that doesn't shift no matter what they eat.
+
+A scenario: you have a busy work day, push lunch to 3pm, then have a big dinner at 8 with friends. You feel sluggish the next morning, blame the food quality or the wine, and try to "eat cleaner" the next day. The actual mechanic was the timing, not the content. If the same dinner had been a 2pm lunch, your body would have processed it cleanly.
+
+Takeaway: light first, food second. The clock and the sky matter more than the calorie count.`
+      },
+      {
+        q: "What environment is best for me to make decisions?",
+        a: `Two systems apply, both populated in your blueprint, and they point the same direction with one nuance.
+
+In the PHS system (Jenna Zoe), your Environment is Kitchens — the physical type of place where your body genuinely thrives. Warm, functional, food-centred, domestic in texture. Not sterile offices, not minimalist studios. A space where something is being made or sustained.
+
+In the Variables system (Jovian Archive), your Environment arrow is Right, passive — meaning your nervous system needs spaces that are calm, low-stimulus, and protective. Not overstimulating, not buzzing with activity, not where you're being demanded of.
+
+The two converge: a calm, quiet kitchen serves both needs at once. A warm domestic space that isn't trying to perform for anyone. This is where your body is in its right context AND your nervous system is in its right register. Important conversations, big decisions, and waiting out emotional waves all land best for you in that kind of space.
+
+Practically: if you have a hard decision in front of you, get yourself into a kitchen-like environment and let time pass there. Cook something while you think. Have the hard conversation at the kitchen table, not on a Zoom call from your office.`
+      },
+      {
+        q: "Where should I work?",
+        a: `Same answer as your decision-environment, applied to work specifically. Your PHS Environment is Kitchens — workspaces with warmth, lived-in quality, sensory richness. Your Variables Environment is Right/passive — calm, low-stimulus, protective of your nervous system. These two together rule out a lot of common modern work setups: open-plan offices, busy cafés, high-energy coworking spaces.
+
+What works for you: a home workspace near or in a kitchen-like room. A quiet corner of a small café where you're not being interrupted. A library — but the calm reading-room kind, not a buzzing student commons. Anywhere that has the textural feel of "things being made" but not the demand of "things being performed."
+
+There's an additional layer specific to your design: you're a Manifestor with an open Sacral, which means your work energy comes in bursts, not in steady eight-hour blocks. The ideal working day for you isn't "show up at 9, work until 5." It's: intense focus when the energy is there, real withdrawal when it isn't, then back. Forcing yourself to perform steadily through hours your body doesn't have energy for is one of the fastest routes to your Not-Self frequency (Anger).
+
+Takeaway: pick a calm, warm space, and respect the rhythm — work hard when it's there, fully stop when it's not. Don't pretend you have Generator energy.`
+      },
+      {
+        q: "What's the most important Gene Key in my chart and what does it mean for my life direction?",
+        a: `Your most important Gene Key is Gift 26. In Gene Keys, every chart has 64 gates, but the Personality Sun gate carries a special weight — it's the most concentrated expression of your life's purpose. For you that's Gate 26: the Egoist in shadow, the Artful in gift, the Invisible in siddhi.
+
+The 26 is fundamentally about communication of value — knowing what something is worth and being able to make others see it too. In its shadow expression, it's the manipulator, the salesperson who pushes things people don't need. In its gift expression — Artfulness — it's the person who can communicate a complex truth in a way that lands cleanly, who knows how to package what matters, who naturally rallies others around something genuinely valuable. In its highest expression (the siddhi of Invisibility), the artfulness becomes so refined that the communicator disappears into the message itself.
+
+Your life direction lives along this axis. You're here to find what's actually worth communicating — to investigate it (your 1st line), to learn what works through experience (your 3rd line), and then to communicate it artfully so others can act on it. Whatever your specific career or context, that mechanic is the thread.
+
+A practical anchor: when you find yourself most alive, most "in flow," it's almost always when you're communicating something you've fully understood to someone who genuinely needs it. That's the 26 in its gift. That feeling is the signal you're on track.`
+      }
+    ]
+  },
+  {
+    title: "Veronika's questions",
+    items: [
+      {
+        q: "What's my profile and what does it mean for how I learn?",
+        a: `You're a 3/5. The 3 means you learn through trial and error — you try things, things break, and the breaking is the actual learning. The 5 means others project onto you constantly, expecting you to be a saviour or solution-bringer in ways that don't match who you actually are. Together, the 3/5 is sometimes called the "Great Life Experimenter" or the "Heretic" — someone whose path is full of public mistakes that other people learn from, alongside private mistakes that teach the self.
+
+The 3 line specifically means "no" comes easily before "yes." You're built to discover what doesn't work first — that's not a flaw, it's the mechanic. People with a different profile might find this exhausting (constantly bumping into what fails), but for you it's how the data comes in.
+
+The 5 line adds a particular flavour: when you fail publicly, people often blame you in a way that's disproportionate. They projected onto you, the projection broke, and the fallout feels personal. It usually isn't. Their projection was the issue, not your failure.
+
+A scenario: you take on a project, it doesn't go as planned, and the people involved react more strongly than seems warranted. You replay your part looking for what you did wrong. Often the actual answer is: they had an unrealistic image of what you were going to deliver, and the gap between their image and reality is what they're reacting to.
+
+Takeaway: trial and error isn't optional for you, and other people's reactions to your trials often have more to do with their projections than with you.`
+      },
+      {
+        q: "What's my incarnation cross?",
+        a: `You're on the Right Angle Cross of Tension (39/38 | 21/48). This is the structural axis of your life — the four gates that form the conscious and unconscious arms of your purpose. Gate 39 is your Personality Sun (Provocation, the Tension of Release), Gate 38 is your Personality Earth (the Fighter, sustained struggle for what matters), Gate 21 is your Design Sun (Hunter/Huntress, control over resources and territory), Gate 48 is your Design Earth (Wisdom, depth of insight from sustained study).
+
+Tension as a cross theme is exactly what it sounds like: your life is structurally organised around productive friction. Not random conflict — generative tension. You're here to provoke things into the open, to fight for what matters, and to develop deep wisdom through that sustained engagement. People with a Cross of Tension are often misread as "difficult" or "intense," but the friction isn't a personality flaw — it's the design's job. Without it, things stay surface, unresolved, fake-easy.
+
+A practical implication: when you feel like you're stirring something up by being honest, asking the hard question, or refusing to let a thing slide — that's the Cross of Tension working. Suppressing it to be more agreeable goes against your wiring and produces your Not-Self frequency (Anger). The work is to let the tension be productive — provoke what needs provoking, fight for what's worth fighting for, and let the wisdom build from there.`
+      },
+      {
+        q: "What's my digestion type and what does it mean practically?",
+        a: `You're an Alternating Appetite. Your digestion doesn't work on a fixed schedule or a fixed pattern — it shifts. Some days you're hungry, some days you're not. Some meals you want a lot, some meals very little. Some weeks you want one thing, the next week something completely different.
+
+For most people this would be confusing, and most cultural advice ("eat three meals a day," "always have breakfast") doesn't fit you at all. Forcing yourself onto a regular eating schedule is one of the fastest ways to dull your body's signals and create digestive issues that aren't there when you eat freely.
+
+What works: trust the variation. When you're hungry, eat. When you're not, don't. Don't force breakfast because it's morning. Don't skip dinner because some app told you to fast. Your body knows when it needs fuel, and the timing won't match anyone else's.
+
+A scenario: you go on holiday with friends who eat at fixed times. You're not hungry at lunch, but you eat anyway because everyone else is. Three hours later you feel heavy, slow, slightly ill. Then at 4pm you're suddenly very hungry, but it's not "meal time" so you ignore it. By dinner you're either over-hungry and eat too fast or your appetite has shifted again. None of that pattern is dysfunction — it's the mismatch between Alternating Appetite and a fixed-schedule social environment.
+
+Takeaway: your digestion's irregularity isn't a problem to fix. Eat when hungry, stop when not. Your body's the one keeping score.`
+      },
+      {
+        q: "What environment is best for me to make decisions?",
+        a: `Two systems apply for you, same structure as Urvil's answer.
+
+In the PHS system (Jenna Zoe), your Environment is Kitchens — the physical type of place where your body thrives. Warm, functional, food-centred, domestic. Same as Urvil — which is unusual and meaningful. (Most couples don't share PHS Environments.)
+
+In the Variables system (Jovian Archive), your Environment arrow is Right, passive — your nervous system needs calm, low-stimulus, protective spaces. Not buzzing, not demanding, not performing.
+
+Both systems converge for you on the same answer: calm kitchens, warm and quiet. Decisions made in that kind of space land more reliably than decisions made in busy environments, in transit, or under pressure.
+
+There's an additional consideration specific to you: your Authority is Emotional, and you have Channel 19-49 (the Synthesis channel). The 19-49 makes you exceptionally sensitive to fairness, conditions, and whether agreements are being honoured. When the environment around a decision feels unfair, rushed, or manipulated, your wave reads that and the answer becomes louder and harder to ignore. So the right environment isn't just calm — it's also fair. A space where you don't feel pushed.
+
+Takeaway: bring big decisions to kitchen-like, calm, fair-feeling spaces. Let your wave move there.`
+      },
+      {
+        q: "What's the most important Gene Key in my chart and what does it mean for my life direction?",
+        a: `Your most important Gene Key is Gift 39. In Gene Keys, the Personality Sun gate is the most concentrated expression of your life's purpose, and for you that's Gate 39. Its three frequencies are Provocation (shadow), Dynamism (gift), and Liberation (siddhi).
+
+The 39 is fundamentally about provocation as a tool — the energy that pokes at what isn't moving, asks the question others avoid, and refuses to let things stay stuck in fake harmony. In its shadow, this becomes provocation for its own sake — picking fights, creating drama, destabilising relationships unnecessarily. In its gift expression — Dynamism — the same provocative energy becomes a force that catalyses real change. You move things that have been stuck. You ask the question that breaks open a stagnant situation. You provoke release. In its highest expression (Liberation), the provocation becomes so refined that what you stir up is freedom itself.
+
+Your life direction lives along this axis. You're here to provoke release in stuck systems — relationships, conversations, structures, your own internal patterns. The 39 paired with your 38 (Personality Earth, the Fighter) means you're built to sustain this work, not just deliver one provocation and leave. Combined with your 5/3 profile, the work happens out loud and through visible experiments.
+
+A practical anchor: when you feel the strongest pull to say the thing nobody else will say — that's your 39 in its gift. That impulse is the signal, not noise to suppress.`
+      },
+      {
+        q: "What does my chart say about how I handle pressure and pushing through?",
+        a: `This is one of the more loaded questions in your chart, because the answer is counter to most cultural advice about resilience and grit.
+
+Your Variables Brain & Body arrow is Right/Receptive. Your nervous system is built to receive, not push. When pressure comes, your body's natural response is to slow down, take less in, do less, eat less. Cultural messaging — especially around productivity and toughness — would say "push through, get it done, override the slowdown." For you, that messaging is genuinely wrong. Pushing through depletes you faster than it does for someone with an active body design.
+
+Layer on your Cross of Tension and your Channel 19-49 (Synthesis), and the picture sharpens. The Cross of Tension means you're built to endure productive friction — but productive friction is different from grinding pressure. The 19-49 makes you threshold-sensitive: when conditions feel unfair, manipulative, or agreement-breaking, your system reads that and reacts before your conscious mind catches up. Outer-planet transits (Saturn, Pluto, Uranus) amplify this.
+
+A scenario you'll recognise: you take on too much, push through, perform well externally for a stretch, and then something small — a comment, a logistical hiccup — makes you collapse or rage in a way that looks disproportionate. It isn't disproportionate. It's the system reporting that the load was wrong, and the small trigger was just the place where it could finally land.
+
+Takeaway: your design rewards pacing and rest, not pushing. When you feel the slowdown, that's information. Less is more, especially under pressure.`
+      }
+    ]
+  },
+  {
+    title: "Us",
+    items: [
+      {
+        q: "How does our 22-12 channel show up between us?",
+        a: `Channel 22-12 is the Channel of Openness — Gate 22 (Grace, emotional attunement, reading the room) at the Solar Plexus, connecting to Gate 12 (Caution, selective voice, knowing when to speak) at the Throat. This is the most structurally significant feature of your relationship.
+
+What makes it unusual is that you both have it fully defined within your own charts independently. Most couples who "share" a channel are actually electromagnetic — one person carries one gate, the other carries the matching gate, and the channel only completes when they're together. Your 22-12 isn't like that. It's already complete in each of you separately. So when you're together, the channel doesn't complete — it resonates. The same frequency amplifies in the room.
+
+What the channel actually does is produce emotional depth in conversation, but only when the conditions are right. Gate 22 reads the emotional atmosphere; Gate 12 speaks when the mood is genuinely ready and stays silent when it isn't. Together: conversations that go deep fast when conditions allow, and silences that carry weight when they don't. Neither small talk nor performance fits through this channel comfortably.
+
+A scenario: you try to have an important conversation at home, multiple times, and it keeps going sideways. Then you have the same conversation in a different setting — a walk, a kitchen, a quiet meal — and it lands easily. That's not random. The channel is reporting on atmosphere, not on your relationship. When the atmospheric conditions aren't ready, Gate 12 holds back, and forcing it produces friction. When conditions are ready, both gates fire and the conversation goes places ordinary conversations don't reach.
+
+Takeaway: silence between you isn't the channel failing. It's Gate 12 doing its job. Wait for conditions, don't force them.`
+      },
+      {
+        q: "What's the 39/38 provocation pattern and how do we handle it?",
+        a: `There's a wiring between you that runs in one direction. Veronika's Personality Sun is Gate 39 — the Provocation gate, the most active part of her conscious self. Urvil's chart has Gate 38 active in his unconscious Design layer. In Gene Keys, these two gates form a closed pair: 39 provokes, 38 catches. Permanently. Not as a problem — as a structural fact.
+
+Concretely: Veronika says or does something — often without intending to — that activates a fight response in Urvil. He feels pushed to engage, defend, or react. The provocation isn't her being difficult; it's her Sun frequency landing on a gate that's literally designed to be provoked. And the response in him isn't oversensitivity; it's the gate doing what gates do.
+
+Two important nuances. First, this runs one direction: Veronika provokes, Urvil catches. There isn't a symmetric reverse. Second, the provocation isn't necessarily something she says with words — it's a frequency, an energetic poke, often delivered through tone, timing, or what's left unsaid. She often doesn't consciously notice she's doing it.
+
+What handling it looks like: when Urvil notices the activation, the question isn't "how do I make her stop?" or "why am I so reactive?" — both miss the mechanic. The question is "is this 39/38 firing right now, and should I let it complete instead of escalate?" Almost always the answer is to wait the wave (you both have Emotional Authority), then return to the conversation when the wave settles. Reacting in the peak makes the provocation bigger. Letting it process makes it information.
+
+For Veronika: when you notice Urvil is reacting in a way that seems disproportionate to what you said, it's worth asking yourself if a 39 was firing. Not to feel guilty — the gate is your design, not a flaw — but to notice the mechanic. Sometimes letting the provocation breathe rather than doubling down lets the actual conversation come through.`
+      },
+      {
+        q: "We're both Manifestors with Emotional Authority — what kind of conflicts come from that?",
+        a: `This combination is both rare and high-friction by design. Two things stack:
+
+Manifestor + Manifestor. You both have closed, repelling auras. Manifestors aren't built to wait for invitations or sacral responses — they initiate. Two Manifestors in a relationship means two people who naturally start things, push their own agendas, and resist being told what to do or when. Without informing each other, you'll constantly walk into each other's initiations. The Strategy "Inform before acting" is non-negotiable for both of you, and the most common conflict pattern is when one of you starts something — schedules a thing, makes a decision, begins a project — without informing the other.
+
+Emotional + Emotional. Neither of you has in-the-moment clarity. Your truth lives in the wave, and the wave takes time. So when a real disagreement arises, neither of you has access to a clean answer immediately. The temptation is to push for resolution in the moment — to "talk it through right now." That doesn't work for you. It produces the appearance of resolution while the actual answer is still moving.
+
+Together: two initiators who can't access immediate clarity, both with Anger as Not-Self.
+
+Common conflict patterns: acting without informing triggers the other's Manifestor resistance; trying to resolve in the heat causes both waves to spike, escalating things and hiding the actual answer; insisting "we need to talk about this NOW" forces premature clarity; one of you withdraws to wait the wave and the other reads it as stonewalling.
+
+What helps: explicitly informing each other of decisions before acting, even small ones, until it becomes habit. And explicitly naming the wave: "I need to sleep on this" isn't avoidance — it's the only mechanic that produces real clarity for either of you. Both of you respecting that gives the relationship structural protection.`
+      },
+      {
+        q: "Where do our charts most align, and where do they most differ?",
+        a: `Where you align: both Manifestors with closed auras and the same Strategy (Inform). Both Emotional Solar Plexus Authority with the same wave-waiting requirement. Both Not-Self Anger, both Signature Peace. Both PHS Environment: Kitchens. Both Variables Environment: Right/Passive — same nervous-system need for calm spaces. Channel 22-12 Openness, fully defined in each of you independently — shared frequency, not electromagnetic completion.
+
+This much overlap is statistically rare. Two Manifestors is rare on its own. Two Emotional Manifestors with the same Environment in two systems and the same channel is unusual enough to be worth naming.
+
+Where you differ structurally: Definition — Urvil is Single (one continuous circuit), Veronika is Split (two unconnected circuits). Cross — Urvil's Cross of Rulership (26/45 | 47/22) is about leadership of resources and clarity-through-stuck-process; Veronika's Cross of Tension (39/38 | 21/48) is about productive friction and provoked release. Profile — 1/3 vs 3/5; both share the 3rd line of trial-and-error learning, but Urvil's 1 wants depth-before-action, Veronika's 5 brings projection from others.
+
+Variables Brain & Body: Urvil is Left/Active (body needs movement), Veronika is Right/Receptive (body needs less, not more). Direct opposite. What energises Urvil drains Veronika, and vice versa. Variables Perspective: Urvil is Right/waiting (peripheral, philosophical), Veronika is Left/active (focused, pursuing). Different orientations toward where you look for opportunity. Most important Gene Keys: Gift 26 (communication of value) vs Gift 39 (provocation of release).
+
+The pattern: structurally aligned at the level of type, authority, environment, and one shared channel — all of which makes the relationship deeply compatible. Differentiated at the level of body, perspective, profile detail, and life-purpose frequency — which is what keeps it generative rather than collapsing into sameness.`
+      },
+      {
+        q: "How long should we wait before making a big decision together?",
+        a: `Both of you have Emotional Authority. Neither of you has reliable in-the-moment clarity. So the answer for both of you, individually, is: long enough for the wave to complete its cycle. For most decisions, that's at least a few days. For significant decisions — anything involving money, location, work, or a shift in the relationship itself — it's longer. Multiple nights of sleep. The wave needs to move through high, low, and neutral, and the same answer has to survive all three states.
+
+When the decision is shared, the math compounds. Both of you need your own wave to complete, AND the answers need to align. So the practical sequence is: hear the proposal or recognise the decision point. Sleep on it. Independently. Don't try to discuss the answer the same day. Check your own wave at high, low, and neutral — if the answer is shifting, the wave isn't done. When your individual answer holds steady, share it with the other. If both answers align, go. If they don't, neither of you is wrong — the decision isn't ready, and pushing it is forcing premature clarity.
+
+A common failure mode for both Emotional Authorities together: deciding at a peak. You're both excited, both leaning yes, the energy in the room is convergent — and you decide. Three days later one of you is doubting, the other is angry that the doubt is "going back on" the decision. The decision wasn't actually made; the wave was at peak and you mistook the peak for clarity.
+
+Takeaway: significant decisions take days to weeks for you. There's no shortcut. The shortcut produces the regret.`
+      },
+      {
+        q: "How should we handle disagreements with each other?",
+        a: `Three layers stack here, and they all matter.
+
+Layer 1: the wave. When a disagreement starts, neither of you has clarity. Whatever either of you says in the heat is the wave talking, not the truth. The first move when conflict appears isn't to resolve it — it's to recognise that resolution isn't available yet. Naming the wave explicitly helps: "I need to wait this out before I can really respond." That isn't avoidance; it's the only honest move for an Emotional Authority.
+
+Layer 2: the 39/38. Specifically when Veronika feels like Urvil is reacting disproportionately, or Urvil feels provoked beyond what the situation seems to warrant — that's often the 39/38 firing, not the actual disagreement. Naming it ("is this our 39/38?") sometimes shifts the whole frame. The provocation is real and structural, but it's not the content of the disagreement — it's the energetic layer underneath.
+
+Layer 3: the conditions. Your shared 22-12 channel is atmosphere-dependent. Some conversations between you will not land in the place they keep failing in. They'll land easily in a different setting. If you've tried to have the same conversation three times at home and it keeps going sideways, the answer probably isn't "we're broken" — it's "this isn't the right atmosphere for this conversation." Move it. A walk, a kitchen, a different time of day.
+
+In practice when you're in the middle of a disagreement: pause if either of you is in wave-peak or wave-trough. Don't decide anything in either state. Inform each other when you need to step back. "I'm going to sit with this for a day" lands differently than walking out silently. If a conversation keeps misfiring in the same environment, change the environment. Ask whether the heat is about the actual content or about the 39/38. Sometimes it's both, but naming it changes the dynamic.
+
+The thing to avoid most: trying to "talk it through right now." Neither of your designs supports that. The wave needs time, the channel needs the right atmosphere, and forcing it through anyway is how small disagreements escalate into bigger ones.`
+      },
+      {
+        q: "As Manifestors, when should we inform each other versus just act?",
+        a: `Strategy for Manifestors is "Inform before acting." This is non-negotiable for both of you. It's not a politeness; it's the mechanic that prevents your initiations from triggering each other's Manifestor resistance.
+
+The question of "when" has a useful answer: inform before acting on anything that could affect the other. That's a wider net than most people initially apply it to. It includes big decisions like financial moves, location changes, work shifts, family commitments — the obvious cases. It also includes schedule decisions: when you're going to be home or not, when you're starting or ending something, when you're working vs available. Environmental decisions: when you're rearranging shared space, inviting someone over, playing music or making the kitchen busy. Emotional decisions: when you're going to have a hard conversation, when you need space to wait out a wave, when you're not available to engage. And decisions that look small but ripple: starting a diet, starting a project that will eat your evenings, starting a new commitment that will pull your attention.
+
+The mistake most Manifestor couples make is informing only on the "big" stuff and assuming the small stuff doesn't need it. Then a small unannounced action triggers the other's resistance and it looks like the conflict is about the small thing, when actually it's about the missing inform.
+
+What "inform" looks like — the mechanic, not the script: brief; not a request for permission. Before the action, not after. Direct: "I'm going to do X, starting now/today/this week." Doesn't require their approval to proceed. You're informing, not negotiating.
+
+The exception: if your action will materially affect them in a way that would constitute a decision they need their own wave for, then it's not just an inform — it's a shared decision and goes through the wave-and-align process.
+
+Takeaway: when in doubt, inform. The cost of over-informing is mild (a small interruption); the cost of under-informing is high (Manifestor friction, stacked over time, becoming the dominant conflict pattern).`
+      }
+    ]
+  }
+];
+
+
 function loadAskHistory() {
   try {
     const raw = typeof window !== 'undefined' && window.localStorage
@@ -9426,6 +9696,22 @@ function AskPage() {
                 </button>
               ))}
             </div>
+          </section>
+          <Ornament />
+          <section className="ask-faq">
+            <div className="ask-faq-eyebrow">Quick reads</div>
+            <div className="ask-faq-intro">Twenty curated questions and answers, hand-vetted from the codex. Tap any question to expand.</div>
+            {FAQ_SECTIONS.map(function(section, si) { return (
+              <div key={si} className="ask-faq-section">
+                <div className="ask-faq-section-title">{section.title}</div>
+                {section.items.map(function(item, ii) { return (
+                  <details key={ii} className="ask-faq-item">
+                    <summary className="ask-faq-q">{item.q}</summary>
+                    <div className="ask-faq-a">{item.a.split('\n\n').map(function(para, pi) { return <p key={pi}>{para}</p>; })}</div>
+                  </details>
+                ); })}
+              </div>
+            ); })}
           </section>
         </>
       )}
