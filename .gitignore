@@ -1,0 +1,7 @@
+# Backup files (keep on disk per backup discipline, ignore from git)
+*.backup_*
+**/*.backup_*
+
+# Local scratch
+.DS_Store
+*.log
