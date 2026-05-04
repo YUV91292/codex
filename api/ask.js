@@ -36,7 +36,7 @@ export default async function handler(req, res) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
+        model: 'claude-sonnet-4-6',
         max_tokens: 1024,
         messages: [
           { role: 'user', content: prompt },
@@ -53,6 +53,7 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
+
     // Extract the text content from the response
     const answer = data.content
       ?.filter(c => c.type === 'text')

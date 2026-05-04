@@ -9145,7 +9145,49 @@ async function callAI(question, mode, codexContext) {
   const isCodexMode = mode === 'codex';
   let prompt;
   if (isCodexMode) {
-    prompt = `You are a Human Design and Gene Keys analyst answering a question for Urvil and Veronika about their personal Codex. Answer in 2-4 paragraphs maximum, in plain English, grounded in the codex content provided. Do not invent facts not present in the context. If the codex doesn't cover the question, say so directly.
+    const CHART_BLUEPRINT = `=== URVIL ===
+Birth: 9 December 1992, 5:13 PM, Dohad, India (UTC+5:30)
+Type: Manifestor | Profile: 1/3 | Authority: Emotional (Solar Plexus) | Strategy: Inform before acting
+Definition: Single
+Defined centers: Head, Ajna, Throat, Solar Plexus, Spleen
+Open centers: G, Sacral, Heart/Ego, Root
+Defined channels: 16-48 (Talent), 22-12 (Openness), 11-56 (Curiosity), 47-64 (Abstraction)
+Defined gates from channels: 11, 12, 16, 22, 47, 48, 56, 64
+Personality (Conscious): Sun 26.1, Earth 45.1, NN 26.5, SN 45.5, Moon 16.6, Mercury 14.3, Venus 60.5, Mars 56.1, Jupiter 48.2, Saturn 13.2, Uranus 54.2, Neptune 54.3, Pluto 43.6
+Design (Unconscious): Sun 47.3, Earth 22.3, NN 11.5, SN 12.5, Moon 22.4, Mercury 64.6, Venus 48.5, Mars 15.2, Jupiter 6.2, Saturn 19.6, Uranus 38.5, Neptune 54.2, Pluto 43.2
+Not-Self: Anger | Signature: Peace
+
+=== VERONIKA ===
+Birth: 3 July 1997, 11:00 AM, Saint Petersburg, Russia
+Type: Manifestor | Profile: 3/5 | Authority: Emotional (Solar Plexus) | Strategy: Inform before acting
+Definition: Split
+Defined centers: G, Heart/Ego, Throat, Solar Plexus, Root
+Open centers: Head, Ajna, Sacral, Spleen
+Defined channels: 19-49 (Synthesis), 25-51 (Initiation), 22-12 (Openness — shared with Urvil)
+Defined gates from channels: 12, 19, 22, 25, 49, 51
+Personality (Conscious): Sun 39.3, Earth 38.3, NN 47.6, SN 22.6, Moon 12.2, Mercury 53.6, Venus 31.4, Mars 18.3, Jupiter 49.3, Saturn 51.5, Uranus 19.1, Neptune 60.3, Pluto 34.4
+Design (Unconscious): Sun 21.5, Earth 48.5, NN 46.1, SN 25.1, Moon 13.1, Mercury 27.1, Venus 21.5, Mars 47.4, Jupiter 13.3, Saturn 21.2, Uranus 19.1, Neptune 60.4, Pluto 34.6
+Not-Self: Anger | Signature: Peace
+Cross: Right Angle Cross of Tension (39/38 | 47/22)
+
+=== RELATIONAL DYNAMICS ===
+Shared Channel: 22-12 Openness. Urvil has it via his definition. Veronika has Gate 22 via Personality South Node 22.6 and Gate 12 via Personality Moon 12.2.
+Structural provocation: Veronika's Personality Sun (Gate 39 — Provocation) directly activates Urvil's Gate 38, which sits at Urvil's Design Uranus position (38.5). Permanent and structural, not situational.
+Both are Emotional Manifestors. No in-the-moment clarity for either. Wave-waiting protective for both.
+Channel 19-49 (Veronika) makes her threshold-sensitive to fairness and conditions; outer-planet transits amplify intensely.
+
+=== HARD RULES ===
+- The CHART BLUEPRINT above contains verified ground-truth chart facts. Do not contradict it.
+- For "is Gate X defined in [person]" questions: check the defined-gates list. If a gate is not listed as defined for that person, it is NOT defined for them — say so directly.
+- For "is [center] open/defined" questions: use the centers lists.
+- For interpretive questions about a gate's meaning, line nuance, or relational dynamic: use the CODEX CONTEXT for narration, but anchor to the CHART BLUEPRINT facts.
+- Distinguish in answers: what is Urvil's, what is Veronika's, what is relational, what is transit-driven.
+- If neither blueprint nor codex context covers the question, say so directly. Do not invent.`;
+
+    prompt = `You are a Human Design and Gene Keys analyst answering a question for Urvil and Veronika about their personal Codex. Answer in 2-4 paragraphs maximum, in plain English. Use the CHART BLUEPRINT below as ground-truth chart facts. Use the CODEX CONTEXT for interpretive depth and narration. Do not invent facts beyond what is in the blueprint or codex content. If neither covers the question, say so directly.
+
+CHART BLUEPRINT:
+${CHART_BLUEPRINT}
 
 CODEX CONTEXT:
 ${codexContext}
