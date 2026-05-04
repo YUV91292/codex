@@ -162,37 +162,30 @@ Direct, structured, no fluff. I push back; expect Claude to push back too. Mocku
   - Both present → CODEX wins (apply general knowledge → us)
   - Neither → WEB (default)
 
-### 5.4 The actual problem (the bug to fix next)
-User asked: *"Is Gate 45 defined in Urvil?"*
-Codex responded: *"I don't have access to the codex content that would show me Urvil's specific chart or gate definitions..."*
+### 5.4 The actual problem (FIXED 4 May 2026)
+**Status: Shipped.** Previously: "Codex AI says I don't have access to the codex content" when asked personal chart questions. Diagnosis was: CODEX-mode prompt had rich interpretive codex content but ZERO structured chart facts. The LLM correctly searched the codex pages, found nothing matching e.g. "Gate 45" (because Gate 45 has no codex page), and said "I don't have access."
 
-**Diagnosis:** The Codex AI handler has NO embedded knowledge of our actual chart blueprints. It's a generic HD chatbot. The "personal codex" promise isn't fulfilled in the code. Either:
-- The system prompt is missing chart data entirely, OR
-- The system prompt has only theoretical HD knowledge with no specifics about us, OR
-- Routing logic exists but CODEX mode has no chart-context loaded
+**Fix:** Injected a `CHART_BLUEPRINT` constant into the CODEX-mode prompt in `index.html` (inside `callAI`, line ~9145). Blueprint contains verified ground-truth facts for both Urvil and Veronika: type, profile, authority, definition, defined centers, defined channels, defined gates, all 13 planet positions per layer (Personality + Design), cross, plus relational dynamics. Hard rules forbid invention beyond blueprint or codex content. WEB mode unchanged.
 
-### 5.5 The fix path (when resuming Codex)
+**Verified working:** "Is Gate 47 defined in Urvil?" -> yes, with Channel 47-64 reasoning. "Is Gate 45 defined in Urvil?" -> no, lists his defined gates 11/12/16/22/47/48/56/64. "What is Veronika's authority?" -> Emotional, references her 19-49 fairness sensitivity. WEB mode: "Who founded HD?" -> Ra Uru Hu, untouched.
 
-**Step 1 — Clone repo locally if not already:**
-```bash
-cd ~/Downloads
-git clone https://github.com/YUV91292/codex.git 2>/dev/null || echo "Already cloned"
-cd codex
-ls api/
-```
+### 5.5 Architecture (live, post-fix)
 
-**Step 2 — Paste contents of every file in `api/`:**
-```bash
-for f in api/*; do echo "=== $f ==="; cat "$f"; echo; done | pbcopy
-```
-Then paste into chat. Claude reads everything in one go.
+**Where the chart blueprint lives:** `index.html`, inside `async function callAI(question, mode, codexContext)`, in the `if (isCodexMode)` branch. Constant named `CHART_BLUEPRINT`. Roughly 60 lines of structured facts.
 
-**Step 3 — Claude will then:**
-1. Map existing architecture (which file handles which endpoint, where the system prompt lives, how routing modes resolve)
-2. Inject chart blueprints into the CODEX-mode system prompt — same authoritative data as §3 above, plus a derived list of every defined gate per person so Q&A can directly answer *"Is Gate X defined?"* from a lookup
-3. Add hard rules: never guess at chart facts, refuse politely if data doesn't cover something, cite source when stating a chart fact
-4. If routing is half-wired, complete it; if it doesn't exist, design it
-5. Deploy via the same git workflow but in `~/Downloads/codex/`
+**Routing:** `mode` arrives at `callAI` as `'codex'`, `'web'`, or pre-resolved from `'auto'`. AUTO detection happens before `callAI` runs — handles personal-pronoun signals -> CODEX, general-knowledge signals -> WEB.
+
+**Backend (`api/ask.js`):** stays a thin passthrough. Frontend assembles the full prompt (system + blueprint + codex context + question) and sends it as a single string. Backend just calls Anthropic's API. Model: `claude-sonnet-4-6` (current as of Feb 2026; Sonnet 4.7 not yet GA).
+
+**The iterative-hardening pattern:** when the LLM gets an interpretive nuance wrong (not a chart fact — those are anchored), the fix is to tighten the blueprint so the misread is forbidden. Example shipped today: 22-12 channel was framed as "shared with Urvil," which the LLM read as electromagnetic ("only completes when together"). Reality: both have Channel 22-12 fully defined independently — it's a companionship channel that resonates, not completes. Blueprint now spells this out explicitly. Same fix pattern applies for any future interpretive miss: read the wrong answer, identify what the blueprint *implied* that the LLM picked up, rewrite that section to be unambiguous.
+
+**Update flow for blueprint changes:**
+1. Edit the `CHART_BLUEPRINT` template literal inside `callAI` (Python `find/replace` on the relevant section is safest — see git history for examples)
+2. `node -c api/ask.js` to syntax-check the JS context, even though we're editing index.html (the blueprint is JS)
+3. `git add index.html` -> commit -> `git pull --rebase` -> push
+4. Test on `codex-smoky-rho.vercel.app` after Vercel rebuild (~60 seconds)
+
+**Stale local copies to ignore (or delete):** `~/Desktop/codex` (no git, no AI code, last touched Apr 23) and `~/Projects/codex` (stale clone, last touched Apr 25). The live working copy is `~/Downloads/codex` only.
 
 ---
 
@@ -396,6 +389,7 @@ Documentation only works if updates are cheap. Minimum viable ritual:
 
 > **Update rule:** most recent on top. One bullet, one sentence. Date prefix every entry. Truncate to last 20 entries — older history lives in git log.
 
+- **2026-05-04** — Codex personalisation shipped: `CHART_BLUEPRINT` injected into CODEX-mode prompt with verified facts for both charts + relational dynamics. Bug "I don't have access to codex content" resolved. Same-day follow-up: 22-12 channel mechanic corrected from electromagnetic to companionship after first user test. Two commits on `main`. Model string updated `claude-sonnet-4-5` -> `claude-sonnet-4-6` in `api/ask.js`. Iterative-hardening pattern documented in §5.5.
 - **2026-05-04** — Created consolidated HANDOVER.md (this doc) covering both Auric Mirror + Codex. Established backup discipline + update ritual (§11). Previous handover dated end of v6.3 session.
 - **2026-05-04 (earlier)** — Auric Mirror at v6.3, rating ~9.6/10. Pending: phone verification, manual cron trigger, removal of `interpretSkyNote` band-aid in App.jsx.
 - **2026-05-04 (earlier)** — Codex live at codex-smoky-rho.vercel.app but bug confirmed: AI has no chart data injected. Fix path documented in §5.5.
